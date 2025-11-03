@@ -1,0 +1,40 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ft-token-manager
+  namespace: dev
+  labels:
+    app.kubernetes.io/name: ft-token-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ft-token-manager
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ft-token-manager
+    spec:
+      containers:
+        - name: ft-token-manager
+          image: pruizca/ft_token_manager:v1
+          ports:
+            - containerPort: 3000
+
+---
+# https://kubernetes.io/docs/concepts/services-networking/service/
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ft-token-manager
+  namespace: dev
+spec:
+  selector:
+    app.kubernetes.io/name: ft-token-manager
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000

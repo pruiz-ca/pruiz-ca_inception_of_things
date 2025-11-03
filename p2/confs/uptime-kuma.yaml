@@ -1,0 +1,47 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+
+# Gitea
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uptime-kuma
+  labels:
+    app.kubernetes.io/name: uptime-kuma
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: uptime-kuma
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: uptime-kuma
+    spec:
+      containers:
+        - name: uptime-kuma
+          image: louislam/uptime-kuma:2
+          ports:
+            - containerPort: 3001
+          volumeMounts:
+            - name: uptimekuma-data
+              mountPath: /app/data
+      volumes:
+        - name: uptimekuma-data
+          hostPath:
+            path: /home/vagrant/data/uptime-kuma
+            type: DirectoryOrCreate
+
+---
+# https://kubernetes.io/docs/concepts/services-networking/service/
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: uptimekuma-service
+spec:
+  selector:
+    app.kubernetes.io/name: uptime-kuma
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3001

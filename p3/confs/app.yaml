@@ -1,0 +1,19 @@
+# https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ft-token-manager
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/pruiz-ca/pruiz-ca_inception_of_things.git
+    targetRevision: HEAD
+    path: p3/manifests
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+  syncPolicy:
+    automated:
+      selfHeal: true

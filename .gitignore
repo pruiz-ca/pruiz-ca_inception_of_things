@@ -1,0 +1,9 @@
+.vagrant/
+*.box
+.vagrant.d/
+*.log
+*.token
+.DS_Store
+.vscode
+subject.pdf
+*.pass
