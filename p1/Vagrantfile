@@ -6,12 +6,25 @@
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 
+require 'fileutils'
+
 MAX_CPUS   = 1
 MAX_MEMORY = 1024
 SERVER_NAME = "pruiz-caS"
 WORKER_NAME = "pruiz-caSW"
 SERVER_IP  = "192.168.56.110"
 WORKER_IP  = "192.168.56.111"
+VM_PROVIDER = "virtualbox"
+
+
+if Dir.exist?("/goinfre/pruiz-ca")
+  # Add this to zshrc:
+  # export VAGRANT_HOME = "/goinfre/pruiz-ca/.vagrant.d"
+  # export VAGRANT_DOTFILE_PATH = "/goinfre/pruiz-ca/.vagrant"
+
+  system("VBoxManage", "setproperty", "machinefolder", "/goinfre/pruiz-ca/VirtualBox VMs")
+  FileUtils.mkdir_p("/goinfre/pruiz-ca/VirtualBox VMs")
+end
 
 Vagrant.configure("2") do |config|
   # The most common configuration options are documented and commented below.
@@ -37,7 +50,7 @@ Vagrant.configure("2") do |config|
   config.vm.define SERVER_NAME do |server|
     server.vm.hostname = SERVER_NAME
     server.vm.network "private_network", ip: SERVER_IP
-    server.vm.provider "virtualbox" do |vb|
+    server.vm.provider VM_PROVIDER do |vb|
       vb.name = SERVER_NAME
       vb.memory = MAX_MEMORY
       vb.cpus = MAX_CPUS
@@ -59,7 +72,7 @@ Vagrant.configure("2") do |config|
   config.vm.define WORKER_NAME do |worker|
     worker.vm.hostname = WORKER_NAME
     worker.vm.network "private_network", ip: WORKER_IP
-    worker.vm.provider "virtualbox" do |vb|
+    worker.vm.provider VM_PROVIDER do |vb|
       vb.name = WORKER_NAME
       vb.memory = MAX_MEMORY
       vb.cpus = MAX_CPUS
